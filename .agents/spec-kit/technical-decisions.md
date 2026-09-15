@@ -1,0 +1,27 @@
+# Technical Decisions
+
+- Backend: Spring Boot.
+- Languages: Java default; Kotlin allowed when justified.
+- Build: Gradle.
+- Architecture: modular monolith + lightweight hexagonal.
+- Database: PostgreSQL.
+- DB organization: domain schemas in one database.
+- Migration: Flyway.
+- IDs: UUIDv7.
+- REST version: `/v1/...`.
+- API contract: OpenAPI.
+- Authentication: short-lived JWT access token + rotating opaque refresh token.
+- MFA: TOTP + recovery codes for privileged platform roles.
+- Async broker: RabbitMQ.
+- Cache/ephemeral coordination: Redis.
+- Critical event publication: Transactional Outbox.
+- Telemetry: OpenTelemetry.
+- Deployment: Docker on VPS.
+- Environments: development + production.
+- CI/CD: GitHub Actions.
+- Runtime: stateless.
+- Delete model: soft delete by default.
+- Generic purge: 6 months unless retention policy overrides.
+- Event editing: temporary edit lock + optimistic version protection.
+- Reservation capacity: atomic transactional enforcement.
+- Microservices: no extraction in MVP.
