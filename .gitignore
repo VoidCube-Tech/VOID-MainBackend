@@ -36,13 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 
-### Pastas ###
-/uploads/
-
-### requirements ###
-requisitos.md
-
-### Enviroment ###
-.env
-.env.*
-!.env.example
+### Kotlin ###
+.kotlin
