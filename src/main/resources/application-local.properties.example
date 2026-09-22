@@ -1,0 +1,76 @@
+# ==============================================================================
+# application-local.properties.example — Template para ambiente de dev local
+# Copie este arquivo para application-local.properties e ajuste os valores.
+# ==============================================================================
+
+spring.profiles.active=local
+
+# =============================================================================
+# PostgreSQL
+# =============================================================================
+spring.datasource.url=jdbc:postgresql://localhost:5432/voidcube_dev
+spring.datasource.username=SEU_USUARIO
+spring.datasource.password=SUA_SENHA
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+spring.datasource.hikari.maximum-pool-size=10
+spring.datasource.hikari.minimum-idle=2
+spring.datasource.hikari.connection-timeout=30000
+spring.datasource.hikari.idle-timeout=600000
+spring.datasource.hikari.max-lifetime=1800000
+
+# =============================================================================
+# JPA / Hibernate
+# =============================================================================
+spring.jpa.open-in-view=false
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.default_schema=identity
+spring.jpa.hibernate.ddl-auto=validate
+
+# =============================================================================
+# Flyway
+# =============================================================================
+spring.flyway.enabled=true
+spring.flyway.url=jdbc:postgresql://localhost:5432/voidcube_dev
+spring.flyway.user=SEU_USUARIO
+spring.flyway.password=SUA_SENHA
+
+# =============================================================================
+# Redis
+# =============================================================================
+spring.data.redis.host=localhost
+spring.data.redis.port=6379
+spring.data.redis.password=
+spring.data.redis.timeout=2000ms
+
+# =============================================================================
+# RabbitMQ
+# =============================================================================
+spring.rabbitmq.host=localhost
+spring.rabbitmq.port=5672
+spring.rabbitmq.username=guest
+spring.rabbitmq.password=guest
+spring.rabbitmq.virtual-host=/
+
+# =============================================================================
+# Segurança — JWT
+# Gere com: openssl rand -base64 64
+# =============================================================================
+security.jwt.issuer=http://localhost:8080
+security.jwt.access-token-expiry-seconds=900
+security.jwt.refresh-token-expiry-seconds=604800
+
+# =============================================================================
+# Actuator
+# =============================================================================
+management.endpoints.web.exposure.include=health,info,metrics,flyway
+management.endpoint.health.show-details=always
+
+# =============================================================================
+# Logging
+# =============================================================================
+logging.level.com.voidcube=DEBUG
+logging.level.org.flywaydb=INFO
+logging.level.org.springframework.security=DEBUG
+logging.level.org.hibernate.SQL=DEBUG
