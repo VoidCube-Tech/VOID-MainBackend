@@ -41,3 +41,11 @@ out/
 
 
 /graphify-out/
+
+## docs ##
+docs/
+spec-kit/
+
+## Local dev secrets (never commit)
+application-local.properties
+src/main/resources/application-local.properties
