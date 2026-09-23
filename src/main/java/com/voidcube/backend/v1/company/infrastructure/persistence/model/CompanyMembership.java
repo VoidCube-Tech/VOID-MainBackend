@@ -1,6 +1,6 @@
 package com.voidcube.backend.v1.company.infrastructure.persistence.model;
 
-import com.voidcube.backend.core.utils.UiidUtils;
+import com.voidcube.backend.core.utils.UuidUtils;
 import com.voidcube.backend.v1.company.domain.MembershipStatus;
 
 import jakarta.persistence.Column;
@@ -37,7 +37,7 @@ public class CompanyMembership {
 
     @Id
     @Builder.Default
-    private UUID id = UiidUtils.generateV7();
+    private UUID id = UuidUtils.generateV7();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "company_id", nullable = false)

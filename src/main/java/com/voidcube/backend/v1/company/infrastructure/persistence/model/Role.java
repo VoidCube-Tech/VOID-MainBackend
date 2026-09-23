@@ -20,7 +20,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
-import com.voidcube.backend.core.utils.UiidUtils;
+import com.voidcube.backend.core.utils.UuidUtils;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -36,7 +36,7 @@ public class Role {
 
     @Id
     @Builder.Default
-    private UUID id = UiidUtils.generateV7();
+    private UUID id = UuidUtils.generateV7();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "company_id", nullable = false)

@@ -1,6 +1,6 @@
 package com.voidcube.backend.v1.events.infrastructure.persistence.model;
 
-import com.voidcube.backend.core.utils.UiidUtils;
+import com.voidcube.backend.core.utils.UuidUtils;
 import com.voidcube.backend.v1.events.domain.SessionStatus;
 
 import jakarta.persistence.Column;
@@ -38,7 +38,7 @@ public class EventSession {
 
     @Id
     @Builder.Default
-    private UUID id = UiidUtils.generateV7();
+    private UUID id = UuidUtils.generateV7();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "event_id", nullable = false)

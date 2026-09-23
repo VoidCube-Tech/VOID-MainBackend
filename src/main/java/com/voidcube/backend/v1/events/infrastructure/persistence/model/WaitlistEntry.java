@@ -21,7 +21,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.voidcube.backend.core.utils.UiidUtils;
+import com.voidcube.backend.core.utils.UuidUtils;
 import com.voidcube.backend.v1.events.domain.WaitlistStatus;
 
 import java.time.OffsetDateTime;
@@ -38,7 +38,7 @@ public class WaitlistEntry {
 
     @Id
     @Builder.Default
-    private UUID id = UiidUtils.generateV7();
+    private UUID id = UuidUtils.generateV7();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "session_id", nullable = false)
