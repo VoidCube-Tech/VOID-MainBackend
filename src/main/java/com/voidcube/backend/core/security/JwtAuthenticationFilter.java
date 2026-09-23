@@ -1,6 +1,8 @@
 package com.voidcube.backend.core.security;
 
 import com.voidcube.backend.core.context.CompanyContextHolder;
+import com.voidcube.backend.core.context.SupportContextHolder;
+import com.voidcube.backend.core.security.support.SupportSessionContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +15,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -32,12 +36,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
         String token = resolveToken(request);
+        UUID authenticatedUserId = null;
 
         if (StringUtils.hasText(token) && jwtProvider.validateToken(token)) {
-            UUID userId = jwtProvider.getUserIdFromToken(token);
+            authenticatedUserId = jwtProvider.getUserIdFromToken(token);
             String email = jwtProvider.getEmailFromToken(token);
 
-            UserPrincipal principal = new UserPrincipal(userId, email);
+            UserPrincipal principal = new UserPrincipal(authenticatedUserId, email);
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     principal,
@@ -48,12 +53,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
+        UUID companyId = null;
         String companyHeader = request.getHeader("X-Company-ID");
         if (StringUtils.hasText(companyHeader)) {
             try {
-                CompanyContextHolder.setCompanyId(UUID.fromString(companyHeader.trim()));
+                companyId = UUID.fromString(companyHeader.trim());
+                CompanyContextHolder.setCompanyId(companyId);
             } catch (IllegalArgumentException ignored) {
                 // Formato de UUID inválido ignorado na resolução automática
+            }
+        }
+
+        String supportSessionHeader = request.getHeader("X-Support-Session-ID");
+        if (StringUtils.hasText(supportSessionHeader) && companyId != null && authenticatedUserId != null) {
+            try {
+                UUID sessionId = UUID.fromString(supportSessionHeader.trim());
+                boolean isEmergency = "true".equalsIgnoreCase(request.getHeader("X-Support-Emergency"));
+                String reason = request.getHeader("X-Support-Reason");
+
+                SupportSessionContext supportContext = new SupportSessionContext(
+                        sessionId,
+                        authenticatedUserId,
+                        companyId,
+                        isEmergency,
+                        reason != null ? reason : "Operação de suporte em contexto de empresa",
+                        Instant.now().plus(1, ChronoUnit.HOURS)
+                );
+                SupportContextHolder.setSession(supportContext);
+            } catch (IllegalArgumentException ignored) {
+                // Formato de UUID inválido ignorado
             }
         }
 
@@ -61,6 +89,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } finally {
             CompanyContextHolder.clear();
+            SupportContextHolder.clear();
         }
     }
 
