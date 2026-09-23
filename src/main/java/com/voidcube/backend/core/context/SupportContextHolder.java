@@ -21,7 +21,8 @@ public final class SupportContextHolder {
     }
 
     public static boolean isSupportModeActive() {
-        return CURRENT_SUPPORT_SESSION.get() != null;
+        SupportSessionContext session = CURRENT_SUPPORT_SESSION.get();
+        return session != null && !session.isExpired();
     }
 
     public static void clear() {
