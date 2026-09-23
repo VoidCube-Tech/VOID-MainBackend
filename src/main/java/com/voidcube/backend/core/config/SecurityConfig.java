@@ -44,7 +44,10 @@ public class SecurityConfig {
                     "/api/v1/auth/**",
                     "/v1/identity/**",
                     "/actuator/**",
-                    "/error"
+                    "/error",
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
@@ -62,9 +65,13 @@ public class SecurityConfig {
             "Authorization", 
             "Content-Type", 
             "X-Company-ID", 
+            "X-Correlation-ID",
             "X-Support-Session-ID", 
             "X-Support-Emergency", 
             "X-Support-Reason"
+        ));
+        configuration.setExposedHeaders(List.of(
+            "X-Correlation-ID"
         ));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
