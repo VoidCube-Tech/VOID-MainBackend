@@ -1,8 +1,10 @@
 package com.voidcube.backend.core.security;
 
 import com.voidcube.backend.core.context.CompanyContextHolder;
+import com.voidcube.backend.core.context.CorrelationContextHolder;
 import com.voidcube.backend.core.context.SupportContextHolder;
 import com.voidcube.backend.core.security.support.SupportSessionContext;
+import com.voidcube.backend.core.utils.UuidUtils;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -36,6 +38,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
+        String correlationId = request.getHeader("X-Correlation-ID");
+        if (!StringUtils.hasText(correlationId)) {
+            correlationId = UuidUtils.generateV7().toString();
+        }
+        CorrelationContextHolder.setCorrelationId(correlationId);
+        response.setHeader("X-Correlation-ID", correlationId);
+
         String token = resolveToken(request);
         UUID authenticatedUserId = null;
 
@@ -114,6 +123,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } finally {
             CompanyContextHolder.clear();
             SupportContextHolder.clear();
+            CorrelationContextHolder.clear();
         }
     }
 
