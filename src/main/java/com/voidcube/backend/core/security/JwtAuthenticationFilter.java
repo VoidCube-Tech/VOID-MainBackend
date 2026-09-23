@@ -1,5 +1,6 @@
 package com.voidcube.backend.core.security;
 
+import com.voidcube.backend.core.context.CompanyContextHolder;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,7 +48,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        filterChain.doFilter(request, response);
+        String companyHeader = request.getHeader("X-Company-ID");
+        if (StringUtils.hasText(companyHeader)) {
+            try {
+                CompanyContextHolder.setCompanyId(UUID.fromString(companyHeader.trim()));
+            } catch (IllegalArgumentException ignored) {
+                // Formato de UUID inválido ignorado na resolução automática
+            }
+        }
+
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            CompanyContextHolder.clear();
+        }
     }
 
     private String resolveToken(HttpServletRequest request) {
