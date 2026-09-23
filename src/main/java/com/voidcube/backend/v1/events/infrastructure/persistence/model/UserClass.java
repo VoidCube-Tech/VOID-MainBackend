@@ -15,6 +15,8 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.voidcube.backend.core.utils.UiidUtils;
+
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -28,8 +30,8 @@ import java.util.UUID;
 public class UserClass {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Builder.Default
+    private UUID id = UiidUtils.generateV7();
 
     @Column(name = "company_id", nullable = false)
     private UUID companyId;

@@ -1,5 +1,6 @@
 package com.voidcube.backend.v1.company.infrastructure.persistence.model;
 
+import com.voidcube.backend.core.utils.UiidUtils;
 import com.voidcube.backend.v1.company.domain.CompanyStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,8 +34,8 @@ import java.util.UUID;
 public class Company {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Builder.Default
+    private UUID id = UiidUtils.generateV7();
 
     @Column(name = "corporate_name", nullable = false)
     private String corporateName;

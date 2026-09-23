@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS company;
 
 CREATE TABLE IF NOT EXISTS company.companies (
-    id          UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    id          UUID         PRIMARY KEY,
     corporate_name VARCHAR(255) NOT NULL,
     trade_name  VARCHAR(255) NOT NULL,
     document    VARCHAR(20)  NOT NULL,
@@ -20,7 +20,7 @@ CREATE INDEX IF NOT EXISTS idx_companies_status
     ON company.companies (status);
 
 CREATE TABLE IF NOT EXISTS company.roles (
-    id          UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    id          UUID         PRIMARY KEY,
     company_id  UUID         NOT NULL REFERENCES company.companies(id) ON DELETE CASCADE,
     name        VARCHAR(50)  NOT NULL,
     permissions JSONB        NOT NULL DEFAULT '[]',
@@ -37,7 +37,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS uq_roles_company_name
     WHERE deleted_at IS NULL;
 
 CREATE TABLE IF NOT EXISTS company.company_memberships (
-    id               UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    id               UUID        PRIMARY KEY,
     company_id       UUID        NOT NULL REFERENCES company.companies(id) ON DELETE CASCADE,
     user_identity_id UUID        NOT NULL,
     role_id          UUID        NOT NULL REFERENCES company.roles(id),

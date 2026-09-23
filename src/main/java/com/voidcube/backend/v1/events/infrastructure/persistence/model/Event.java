@@ -1,5 +1,6 @@
 package com.voidcube.backend.v1.events.infrastructure.persistence.model;
 
+import com.voidcube.backend.core.utils.UiidUtils;
 import com.voidcube.backend.v1.events.domain.EventStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,8 +33,8 @@ import java.util.UUID;
 public class Event {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Builder.Default
+    private UUID id = UiidUtils.generateV7();
 
     @Column(name = "company_id", nullable = false)
     private UUID companyId;

@@ -1,5 +1,6 @@
 package com.voidcube.backend.v1.events.infrastructure.persistence.model;
 
+import com.voidcube.backend.core.utils.UiidUtils;
 import com.voidcube.backend.v1.events.domain.ReservationStatus;
 
 import jakarta.persistence.Column;
@@ -36,8 +37,8 @@ import java.util.UUID;
 public class Reservation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Builder.Default
+    private UUID id = UiidUtils.generateV7();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "session_id", nullable = false)

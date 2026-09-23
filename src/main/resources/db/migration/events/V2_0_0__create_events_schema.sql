@@ -2,7 +2,7 @@
 CREATE SCHEMA IF NOT EXISTS events;
 
 CREATE TABLE IF NOT EXISTS events.user_classes (
-    id          UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    id          UUID         PRIMARY KEY,
     company_id  UUID         NOT NULL,
     name        VARCHAR(100) NOT NULL,
     description TEXT         NULL,
@@ -19,7 +19,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS uq_user_classes_company_name
     WHERE deleted_at IS NULL;
 
 CREATE TABLE IF NOT EXISTS events.service_users (
-    id                UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    id                UUID         PRIMARY KEY,
     company_id        UUID         NOT NULL,
     name              VARCHAR(255) NOT NULL,
     email             VARCHAR(255) NULL,
@@ -42,7 +42,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS uq_service_users_company_email
     WHERE deleted_at IS NULL AND email IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS events.legacy_user_references (
-    id                UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    id                UUID         PRIMARY KEY,
     company_id        UUID         NOT NULL,
     service_user_id   UUID         NOT NULL REFERENCES events.service_users(id) ON DELETE CASCADE,
     registration_code VARCHAR(100) NOT NULL,
@@ -67,7 +67,7 @@ CREATE INDEX IF NOT EXISTS idx_class_memberships_class_id
     ON events.user_class_memberships (class_id);
 
 CREATE TABLE IF NOT EXISTS events.events (
-    id               UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    id               UUID         PRIMARY KEY,
     company_id       UUID         NOT NULL,
     owner_manager_id UUID         NOT NULL,
     title            VARCHAR(255) NOT NULL,
@@ -89,7 +89,7 @@ CREATE INDEX IF NOT EXISTS idx_events_company_status
     ON events.events (company_id, status);
 
 CREATE TABLE IF NOT EXISTS events.event_audience_rules (
-    id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    id          UUID        PRIMARY KEY,
     event_id    UUID        NOT NULL REFERENCES events.events(id) ON DELETE CASCADE,
     rule_type   VARCHAR(20) NOT NULL,
     target_type VARCHAR(20) NOT NULL,
@@ -103,7 +103,7 @@ CREATE INDEX IF NOT EXISTS idx_audience_rules_event_id
     ON events.event_audience_rules (event_id);
 
 CREATE TABLE IF NOT EXISTS events.event_sessions (
-    id         UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    id         UUID         PRIMARY KEY,
     event_id   UUID         NOT NULL REFERENCES events.events(id) ON DELETE CASCADE,
     company_id UUID         NOT NULL,
     title      VARCHAR(255) NOT NULL,
@@ -134,7 +134,7 @@ CREATE INDEX IF NOT EXISTS idx_event_sessions_start_at
     WHERE deleted_at IS NULL;
 
 CREATE TABLE IF NOT EXISTS events.reservations (
-    id                    UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    id                    UUID        PRIMARY KEY,
     session_id            UUID        NOT NULL REFERENCES events.event_sessions(id) ON DELETE RESTRICT,
     service_user_id       UUID        NOT NULL REFERENCES events.service_users(id) ON DELETE RESTRICT,
     company_id            UUID        NOT NULL,
@@ -162,7 +162,7 @@ CREATE INDEX IF NOT EXISTS idx_reservations_company_status
     ON events.reservations (company_id, status);
 
 CREATE TABLE IF NOT EXISTS events.waitlist_entries (
-    id              UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    id              UUID        PRIMARY KEY,
     session_id      UUID        NOT NULL REFERENCES events.event_sessions(id) ON DELETE CASCADE,
     service_user_id UUID        NOT NULL REFERENCES events.service_users(id) ON DELETE CASCADE,
     company_id      UUID        NOT NULL,
