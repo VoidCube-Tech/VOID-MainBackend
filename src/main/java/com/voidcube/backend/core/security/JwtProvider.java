@@ -60,4 +60,14 @@ public class JwtProvider {
 
         return UUID.fromString(claims.getSubject());
     }
+
+    public String getEmailFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return claims.get("email", String.class);
+    }
 }
