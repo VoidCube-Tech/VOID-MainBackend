@@ -19,6 +19,7 @@ public class GlobalExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(ex.getStatus(), ex.getMessage());
         problemDetail.setTitle("Regra de Negócio Violada");
         problemDetail.setType(URI.create("https://voidcube.com/errors/business-rule-violation"));
+        problemDetail.setProperty("code", ex.getCode());
         problemDetail.setProperty("timestamp", Instant.now());
         return problemDetail;
     }

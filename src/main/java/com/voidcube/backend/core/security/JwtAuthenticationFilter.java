@@ -3,6 +3,7 @@ package com.voidcube.backend.core.security;
 import com.voidcube.backend.core.context.CompanyContextHolder;
 import com.voidcube.backend.core.context.SupportContextHolder;
 import com.voidcube.backend.core.security.support.SupportSessionContext;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,21 +39,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = resolveToken(request);
         UUID authenticatedUserId = null;
 
-        if (StringUtils.hasText(token) && jwtProvider.validateToken(token)) {
-            authenticatedUserId = jwtProvider.getUserIdFromToken(token);
-            String email = jwtProvider.getEmailFromToken(token);
-
-            UserPrincipal principal = new UserPrincipal(authenticatedUserId, email);
-
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    principal,
-                    null,
-                    Collections.emptyList()
-            );
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
-
         UUID companyId = null;
         String companyHeader = request.getHeader("X-Company-ID");
         if (StringUtils.hasText(companyHeader)) {
@@ -62,6 +48,44 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             } catch (IllegalArgumentException ignored) {
                 // Formato de UUID inválido ignorado na resolução automática
             }
+        }
+
+        if (StringUtils.hasText(token) && jwtProvider.validateToken(token)) {
+            authenticatedUserId = jwtProvider.getUserIdFromToken(token);
+            String email = jwtProvider.getEmailFromToken(token);
+            Claims claims = jwtProvider.getClaims(token);
+
+            Boolean temporaryPassword = claims.get("temporary_password", Boolean.class);
+            String userType = claims.get("user_type", String.class);
+            String tokenCompanyIdStr = claims.get("company_id", String.class);
+            UUID tokenCompanyId = null;
+            if (StringUtils.hasText(tokenCompanyIdStr)) {
+                try {
+                    tokenCompanyId = UUID.fromString(tokenCompanyIdStr);
+                } catch (IllegalArgumentException ignored) {
+                }
+            }
+
+            if (companyId == null && tokenCompanyId != null) {
+                companyId = tokenCompanyId;
+                CompanyContextHolder.setCompanyId(companyId);
+            }
+
+            UserPrincipal principal = new UserPrincipal(
+                    authenticatedUserId,
+                    email,
+                    tokenCompanyId != null ? tokenCompanyId : companyId,
+                    Boolean.TRUE.equals(temporaryPassword),
+                    userType != null ? userType : "PLATFORM"
+            );
+
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    principal,
+                    null,
+                    Collections.emptyList()
+            );
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         String supportSessionHeader = request.getHeader("X-Support-Session-ID");

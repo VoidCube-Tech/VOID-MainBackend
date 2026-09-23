@@ -20,8 +20,8 @@ public class JwtProvider {
 
     public JwtProvider(
             @Value("${security.jwt.secret:default-secret-key-voidcube-must-be-at-least-256-bits-long}") String secret,
-            @Value("${security.jwt.issuer}") String issuer,
-            @Value("${security.jwt.access-token-expiry-seconds}") long accessTokenExpirationSeconds
+            @Value("${security.jwt.issuer:http://localhost:8080}") String issuer,
+            @Value("${security.jwt.access-token-expiry-seconds:900}") long accessTokenExpirationSeconds
     ) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.issuer = issuer;
@@ -29,17 +29,27 @@ public class JwtProvider {
     }
 
     public String generateAccessToken(UUID userId, String email) {
+        return generateAccessToken(userId, email, null, false, "PLATFORM");
+    }
+
+    public String generateAccessToken(UUID userId, String email, UUID companyId, boolean temporaryPassword, String userType) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + (accessTokenExpirationSeconds * 1000));
 
-        return Jwts.builder()
+        var builder = Jwts.builder()
                 .subject(userId.toString())
                 .claim("email", email)
+                .claim("temporary_password", temporaryPassword)
+                .claim("user_type", userType)
                 .issuer(issuer)
                 .issuedAt(now)
-                .expiration(expiryDate)
-                .signWith(key)
-                .compact();
+                .expiration(expiryDate);
+
+        if (companyId != null) {
+            builder.claim("company_id", companyId.toString());
+        }
+
+        return builder.signWith(key).compact();
     }
 
     public boolean validateToken(String token) {
@@ -69,5 +79,13 @@ public class JwtProvider {
                 .getPayload();
 
         return claims.get("email", String.class);
+    }
+
+    public Claims getClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }
