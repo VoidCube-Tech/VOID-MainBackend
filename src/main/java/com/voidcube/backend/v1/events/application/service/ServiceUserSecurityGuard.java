@@ -17,4 +17,18 @@ public class ServiceUserSecurityGuard {
             );
         }
     }
+
+    public void ensureManagerAccess(UserPrincipal principal) {
+        if (principal == null) {
+            throw new BusinessException("UNAUTHORIZED", "Autenticação requerida.", HttpStatus.UNAUTHORIZED);
+        }
+        ensurePasswordChangeNotRequired(principal);
+        if ("SERVICE_USER".equalsIgnoreCase(principal.userType())) {
+            throw new BusinessException(
+                    "EVENT_MANAGEMENT_DENIED",
+                    "Apenas gestores têm permissão para criar ou gerenciar eventos e sessões.",
+                    HttpStatus.FORBIDDEN
+            );
+        }
+    }
 }
