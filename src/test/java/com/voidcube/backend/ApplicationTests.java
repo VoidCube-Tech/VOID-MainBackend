@@ -29,6 +29,16 @@ class ApplicationTests {
         public LegacyUserReferenceRepository legacyUserReferenceRepository() {
             return Mockito.mock(LegacyUserReferenceRepository.class);
         }
+
+        @Bean
+        public com.voidcube.backend.v1.events.infrastructure.persistence.repository.EventRepository eventRepository() {
+            return Mockito.mock(com.voidcube.backend.v1.events.infrastructure.persistence.repository.EventRepository.class);
+        }
+
+        @Bean
+        public com.voidcube.backend.v1.events.infrastructure.persistence.repository.EventSessionRepository eventSessionRepository() {
+            return Mockito.mock(com.voidcube.backend.v1.events.infrastructure.persistence.repository.EventSessionRepository.class);
+        }
     }
 
     @Autowired
