@@ -13,6 +13,14 @@ public interface EventSessionRepository extends JpaRepository<EventSession, UUID
 
     Optional<EventSession> findByIdAndCompanyIdAndDeletedAtIsNull(UUID id, UUID companyId);
 
+    Optional<EventSession> findByIdAndEventIdAndCompanyIdAndDeletedAtIsNull(UUID id, UUID eventId, UUID companyId);
+
     @Query("SELECT s FROM EventSession s WHERE s.event.id = :eventId AND s.deletedAt IS NULL ORDER BY s.startAt ASC")
     List<EventSession> findAllActiveByEventId(@Param("eventId") UUID eventId);
+
+    @Query("SELECT s FROM EventSession s WHERE s.event.id = :eventId AND s.companyId = :companyId AND s.deletedAt IS NULL ORDER BY s.startAt ASC")
+    List<EventSession> findAllByEventIdAndCompanyIdAndDeletedAtIsNullOrderByStartAtAsc(
+            @Param("eventId") UUID eventId,
+            @Param("companyId") UUID companyId
+    );
 }
