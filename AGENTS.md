@@ -1,4 +1,19 @@
-Backend Libraries
+# Instruções para agentes
+
+## Arquitetura do projeto
+
+Leia [`docs/ARCH.md`](docs/ARCH.md) antes de criar ou alterar a estrutura, os módulos, os fluxos de domínio, a persistência ou as integrações do backend. O documento mostra a árvore atual e as convenções para evolução, distinguindo o que já está implementado do que ainda é alvo arquitetural.
+
+Use o código como referência do comportamento implementado e os documentos em `docs/` como referência para decisões de produto. Não trate módulos planejados como funcionalidades existentes. Ao mudar fronteiras, responsabilidades ou caminhos de pastas, atualize `docs/ARCH.md` na mesma alteração.
+
+## Testes e execução
+
+Sempre que criar ou alterar código de produção, crie ou atualize testes que cubram o comportamento correspondente. Coloque os testes no source set Kotlin ou Java apropriado, espelhando o pacote do código testado; prefira testes unitários para regras isoladas e Testcontainers para integrações que dependam de serviços externos.
+
+Não execute testes automaticamente a cada mudança. Deixe os testes escritos e prontos para o usuário executá-los; só rode testes quando o usuário pedir explicitamente.
+
+## Bibliotecas do backend
+
 As dependências do backend não devem ser usadas só porque estão instaladas. Use Spring Web para APIs HTTP, Validation para validar entrada, Spring Data JPA para persistência comum de domínio, PostgreSQL como banco principal e Flyway para qualquer alteração de schema. Para consultas analíticas, dashboards ou SQL complexo, prefira jOOQ em vez de forçar JPA.
 
 Spring Security deve centralizar autenticação e autorização, e OAuth2 Resource Server deve ser usado para JWT/Bearer Token em vez de validação manual. Actuator, Prometheus e OpenTelemetry servem para observabilidade: Actuator para health/metrics, Prometheus para coleta de métricas e OpenTelemetry para tracing quando o fluxo passar por múltiplos componentes.
