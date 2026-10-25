@@ -144,6 +144,8 @@ Organize testes Kotlin em `src/test/kotlin/com/voidcube/Backend/`, espelhando os
 
 ## Documentos de referência
 
+- [base-conhecimento/README.md](base-conhecimento/README.md): índice da base de conhecimento de produto organizada por assunto; consulte o registro pertinente e confirme ambiguidades no PDF de origem.
+
 - `AGENTS.md`: regras técnicas e critérios de uso das bibliotecas backend.
 - `docs/VoidCube_Decisoes_Consolidadas_2026-10-17.pdf`: decisões consolidadas de produto e recomendações de evolução.
 - `docs/voidcube_arquitetura_produtos_operacao.pdf`: catálogo e arquitetura dos produtos e da operação.

@@ -2,6 +2,8 @@
 
 ## Arquitetura do projeto
 
+Quando a tarefa envolver regras, termos ou escopo de produto, consulte o índice [docs/base-conhecimento/README.md](docs/base-conhecimento/README.md) e os registros Markdown do assunto antes de implementar. Essa base organiza os PDFs como referência consultável por tema; use o PDF original citado quando precisar confirmar contexto ou nuance. Preserve os status APROVADO, PENDENTE, EXEMPLO e ALVO, sem transformar hipótese em requisito ou funcionalidade planejada em código existente.
+
 Leia [`docs/ARCH.md`](docs/ARCH.md) antes de criar ou alterar a estrutura, os módulos, os fluxos de domínio, a persistência ou as integrações do backend. O documento mostra a árvore atual e as convenções para evolução, distinguindo o que já está implementado do que ainda é alvo arquitetural.
 
 Use o código como referência do comportamento implementado e os documentos em `docs/` como referência para decisões de produto. Não trate módulos planejados como funcionalidades existentes. Ao mudar fronteiras, responsabilidades ou caminhos de pastas, atualize `docs/ARCH.md` na mesma alteração.
