@@ -39,5 +39,21 @@ out/
 ### Kotlin ###
 .kotlin
 
+### Java ###
+*.class
+/target/
+hs_err_pid*
+replay_pid*
+*.hprof
 
+### Spring Boot local files ###
+*.log
+**/application-local.properties
+**/application-local.yml
+**/application-local.yaml
+**/.env
+**/.env.*
+!**/.env.example
+
+### Graphify ###
 /graphify-out/

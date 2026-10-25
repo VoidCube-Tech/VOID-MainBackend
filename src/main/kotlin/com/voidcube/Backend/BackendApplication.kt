@@ -1,11 +1,11 @@
-package com.voidcube.backend.main
+package com.voidcube.Backend
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class Application
+class BackendApplication
 
 fun main(args: Array<String>) {
-	runApplication<Application>(*args)
+	runApplication<BackendApplication>(*args)
 }
